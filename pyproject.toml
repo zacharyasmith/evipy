@@ -1,0 +1,14 @@
+[project]
+name = "evipy"
+version = "0.0.1"
+description = "Control eviqo devices (via the cloud) in python. See also eviqo-hacs for a home-assistant connection."
+readme = "README.md"
+authors = [
+    { name = "Zach", email = "zach@smamily.com" }
+]
+requires-python = ">=3.12"
+dependencies = []
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
