@@ -4,7 +4,9 @@ import hashlib
 import json
 import logging
 import os
-from datetime import datetime, timedelta
+from dataclasses import dataclass
+from datetime import UTC, datetime, timedelta
+from multiprocessing import Queue
 from typing import Any, cast
 
 import requests  # type: ignore
@@ -19,6 +21,15 @@ from evipy.model_user import EviqoUserModel
 WS_URL = "wss://app.eviqo.io/dashws"
 
 logger = logging.getLogger("evipy")
+
+
+@dataclass
+class WidgetUpdate:
+    widget_id: str
+    widget_name: str
+    device_id: str
+    widget_value: str
+    time: datetime
 
 
 def calculate_hash(user: str, password: str) -> str:
@@ -54,6 +65,7 @@ class EviqoWebsocketConnection:
         self.message_counter = 0
         self.widget_id_map = {}  # type: dict[int, dict[str, str]]
         self.keepalive_timer = datetime.now()
+        self.update_queue = Queue(maxsize=30)  # type: Queue[WidgetUpdate]
 
     async def connect(self) -> bool:
         """Connect to WebSocket with session cookie"""
@@ -376,6 +388,16 @@ class EviqoWebsocketConnection:
             # Look up widget name if we have the mapping
             device_widget_id_map = self.widget_id_map.get(0, {})
             widget_name = device_widget_id_map.get(widget_id, "Unknown")
+            self.update_queue.put(
+                WidgetUpdate(
+                    widget_id=widget_id,
+                    widget_name=widget_name,
+                    device_id=device_id,
+                    widget_value=widget_value,
+                    time=datetime.now(tz=UTC),
+                ),
+                block=False,
+            )
 
             return {
                 "widget_id": widget_id,

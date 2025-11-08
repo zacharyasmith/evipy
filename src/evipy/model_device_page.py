@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class LifecycleStatus(BaseModel):  # type: ignore
@@ -154,7 +154,7 @@ class EviqoDevicePageModel(BaseModel):  # type: ignore
     disconnectTime: int
     ipInfo: IpInfo
     metadataUpdatedAt: int
-    metadataUpdatedBy: str
+    metadataUpdatedBy: str | None = Field(None)
     lastReportedAt: int
     connectTime: int
     iconName: str
