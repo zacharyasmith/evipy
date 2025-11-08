@@ -485,7 +485,7 @@ class EviqoWebsocketConnection:
         except Exception as e:
             logger.error(f"Error sending message: {e}")
 
-    async def run(self) -> None:
+    async def run(self, just_scan: bool = False) -> None:
         """Main exploration routine"""
         if not await self.connect():
             return
@@ -507,7 +507,7 @@ class EviqoWebsocketConnection:
             await self.keepalive()
 
             # Continue listening for any other messages
-            while True:
+            while True and not just_scan:
                 await self.keepalive()
                 header, payload = await self.listen(duration=20)
         finally:
