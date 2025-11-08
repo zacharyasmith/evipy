@@ -9,7 +9,7 @@ from datetime import UTC, datetime, timedelta
 from multiprocessing import Queue
 from typing import Any, cast
 
-import requests  # type: ignore
+import httpx
 import websockets
 from dotenv import load_dotenv
 
@@ -85,15 +85,17 @@ class EviqoWebsocketConnection:
             """
             # Make HTTP request to login page to capture cookies
             login_url = "https://app.eviqo.io/dashboard/login"
-            response = requests.get(login_url)
+            client = httpx.AsyncClient()
+            response = await client.get(login_url)
+            await client.aclose()
 
             # Parse cookies from response
             cookie_header = ""
             if response.cookies:
                 cookie_parts = []
-                for cookie in response.cookies:
-                    cookie_parts.append(f"{cookie.name}={cookie.value}")
-                    logger.debug(f"Setting cookie {cookie.name}")
+                for cookie_name, cookie_value in response.cookies.items():
+                    cookie_parts.append(f"{cookie_name}={cookie_value}")
+                    logger.debug(f"Setting cookie {cookie_name}")
                 cookie_header = "; ".join(cookie_parts)
 
             headers = {
@@ -115,7 +117,7 @@ class EviqoWebsocketConnection:
             return True
 
         except Exception as e:
-            logger.error(f"Connection failed: {e}")
+            logger.exception(f"Connection failed: {e}")
             return False
 
     async def keepalive(self) -> None:
