@@ -13,7 +13,7 @@ import httpx
 import websockets
 from dotenv import load_dotenv
 
-from evipy.model_device_page import EviqoDevicePageModel
+from evipy.model_device_page import DisplayDataStream, EviqoDevicePageModel  # noqa
 from evipy.model_device_query import Docs as device_docs
 from evipy.model_device_query import EviqoDeviceQueryModel
 from evipy.model_user import EviqoUserModel
@@ -57,13 +57,12 @@ class EviqoWebsocketConnection:
         self.username = user
         self.password = password
         self.ws = None  # type: None | websockets.ClientConnection
-        self.widget_id_to_name = {}  # type: dict[int, str]
-        self.widget_name_to_id = {}  # type: dict[str, int]
         self.user = None  # type: None | EviqoUserModel
         self.devices = []  # type: list[device_docs]
         self.device_pages = []  # type: list[EviqoDevicePageModel]
         self.message_counter = 0
-        self.widget_id_map = {}  # type: dict[int, dict[str, str]]
+        self.widget_id_map = {}  # type: dict[int, dict[str, DisplayDataStream]]
+        self.widget_name_map = {}  # type: dict[int, dict[str, DisplayDataStream]]
         self.keepalive_timer = datetime.now()
         self.update_queue = Queue(maxsize=30)  # type: Queue[WidgetUpdate]
 
@@ -88,7 +87,6 @@ class EviqoWebsocketConnection:
             if http_client is None:
                 http_client = httpx.AsyncClient()
             response = await http_client.get(login_url)
-            await http_client.aclose()
 
             # Parse cookies from response
             cookie_header = ""
@@ -263,19 +261,23 @@ class EviqoWebsocketConnection:
         widgets = dashboard.widgets
 
         device_widget_id_map = self.widget_id_map.setdefault(device_idx, {})
+        device_widget_name_map = self.widget_name_map.setdefault(device_idx, {})
 
         for widget in widgets:
             modules = widget.modules
             for module in modules:
                 display_data_streams = module.displayDataStreams
                 for stream in display_data_streams:
-                    device_widget_id_map[str(stream.id)] = stream.name
+                    device_widget_id_map[str(stream.id)] = stream
+                    device_widget_name_map[str(stream.name)] = stream
         if device_widget_id_map:
-            for wid, name in sorted(
+            for wid, stream in sorted(
                 device_widget_id_map.items(),
                 key=lambda x: int(x[0]) if x[0].isdigit() else 0,
             ):
-                logger.debug(f"  ID {wid}: {name}")
+                logger.debug(
+                    f"  ID {wid}: {stream.name=} {stream.visualization.value=}"
+                )
 
     def parse_binary_message(
         self, data: bytes
@@ -536,7 +538,7 @@ async def main() -> None:
 
 if __name__ == "__main__":
     logging.basicConfig(
-        level=logging.INFO,
+        level=logging.DEBUG,
         format="%(asctime)s - %(name)s - %(funcName)s:%(lineno)d - %(message)s",
         datefmt="%H:%M:%S",
     )
