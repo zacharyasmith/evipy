@@ -67,7 +67,7 @@ class EviqoWebsocketConnection:
         self.keepalive_timer = datetime.now()
         self.update_queue = Queue(maxsize=30)  # type: Queue[WidgetUpdate]
 
-    async def connect(self) -> bool:
+    async def connect(self, http_client: httpx.AsyncClient | None = None) -> bool:
         """Connect to WebSocket with session cookie"""
         try:
             logger.debug(f"Connecting to {self.url}...")
@@ -85,9 +85,10 @@ class EviqoWebsocketConnection:
             """
             # Make HTTP request to login page to capture cookies
             login_url = "https://app.eviqo.io/dashboard/login"
-            client = httpx.AsyncClient()
-            response = await client.get(login_url)
-            await client.aclose()
+            if http_client is None:
+                http_client = httpx.AsyncClient()
+            response = await http_client.get(login_url)
+            await http_client.aclose()
 
             # Parse cookies from response
             cookie_header = ""

@@ -1,6 +1,6 @@
 [project]
 name = "evipy"
-version = "0.0.6"
+version = "0.0.7"
 description = "Control eviqo devices (via the cloud) in python. See also eviqo-hacs for a home-assistant connection."
 readme = "README.md"
 authors = [
