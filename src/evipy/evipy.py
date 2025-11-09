@@ -20,7 +20,7 @@ from evipy.model_user import EviqoUserModel
 
 WS_URL = "wss://app.eviqo.io/dashws"
 
-logger = logging.getLogger("evipy")
+logger = logging.getLogger(__name__)
 
 
 @dataclass
