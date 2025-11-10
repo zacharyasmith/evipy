@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class WidgetUpdate:
     widget_id: str
-    widget_name: str
+    widget_stream: DisplayDataStream
     device_id: str
     widget_value: str
     time: datetime
@@ -275,9 +275,7 @@ class EviqoWebsocketConnection:
                 device_widget_id_map.items(),
                 key=lambda x: int(x[0]) if x[0].isdigit() else 0,
             ):
-                logger.debug(
-                    f"  ID {wid}: {stream.name=} {stream.visualization.value=}"
-                )
+                logger.debug(f"  ID {wid}: {stream.model_dump_json(indent=2)}")
 
     def parse_binary_message(
         self, data: bytes
@@ -359,6 +357,7 @@ class EviqoWebsocketConnection:
         header_info["payload_type"] = payload_type
         if payload_dict is not None:
             logger.debug("Received dictionary")
+            # logger.debug(payload_dict)
             return header_info, payload_dict
         elif payload_str is not None:
             logger.debug("Received ascii")
@@ -392,21 +391,23 @@ class EviqoWebsocketConnection:
 
             # Look up widget name if we have the mapping
             device_widget_id_map = self.widget_id_map.get(0, {})
-            widget_name = device_widget_id_map.get(widget_id, "Unknown")
-            self.update_queue.put(
-                WidgetUpdate(
-                    widget_id=widget_id,
-                    widget_name=widget_name,
-                    device_id=device_id,
-                    widget_value=widget_value,
-                    time=datetime.now(tz=UTC),
-                ),
-                block=False,
-            )
-
+            widget_stream = device_widget_id_map.get(widget_id)
+            if widget_stream is not None:
+                self.update_queue.put(
+                    WidgetUpdate(
+                        widget_id=widget_id,
+                        widget_stream=widget_stream,
+                        device_id=device_id,
+                        widget_value=widget_value,
+                        time=datetime.now(tz=UTC),
+                    ),
+                    block=False,
+                )
+            else:
+                logger.error(f"Could not find widget at ID {widget_id}")
             return {
                 "widget_id": widget_id,
-                "widget_name": widget_name,
+                "widget_name": widget_stream,
                 "device_id": device_id,
                 "widget_value": widget_value,
             }
@@ -508,6 +509,7 @@ class EviqoWebsocketConnection:
             self.device_pages.append(
                 await self.request_charging_status(device.deviceId)
             )
+            # logger.info(self.device_pages[0].model_dump_json(indent=2))
             self.extract_widget_mappings(0, self.device_pages[0])
             await self.keepalive()
 
