@@ -1,7 +1,7 @@
 {
-  "name": "evipy",
+  "name": "eviqo-client-api",
   "version": "1.0.0",
-  "description": "Control Eviqo devices (via the cloud) in Node.js. Monitor your Eviqo charging stations and retrieve real-time data through WebSocket communication.",
+  "description": "Node.js/TypeScript client library for Eviqo EV charging stations. Control and monitor your Eviqo devices via cloud WebSocket connection with full TypeScript support.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -23,23 +23,26 @@
   },
   "keywords": [
     "eviqo",
-    "charging",
+    "ev-charging",
+    "electric-vehicle",
+    "charging-station",
     "websocket",
     "monitoring",
     "iot",
-    "electric-vehicle",
-    "ev-charger"
+    "typescript",
+    "ev-charger",
+    "evse"
   ],
   "author": "Zach <zach@smamily.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/zacharyasmith/evipy.git"
+    "url": "https://github.com/tsightler/eviqo-client-api.git"
   },
   "bugs": {
-    "url": "https://github.com/zacharyasmith/evipy/issues"
+    "url": "https://github.com/tsightler/eviqo-client-api/issues"
   },
-  "homepage": "https://github.com/zacharyasmith/evipy#readme",
+  "homepage": "https://github.com/tsightler/eviqo-client-api#readme",
   "engines": {
     "node": ">=18.0.0"
   },

@@ -1,12 +1,12 @@
-# evipy - Node.js
+# eviqo-client-api
 
-[![npm version](https://badge.fury.io/js/evipy.svg)](https://badge.fury.io/js/evipy)
+[![npm version](https://badge.fury.io/js/eviqo-client-api.svg)](https://badge.fury.io/js/eviqo-client-api)
 [![Node.js 18+](https://img.shields.io/badge/node-18+-blue.svg)](https://nodejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.2-blue)](https://www.typescriptlang.org/)
 
-A Node.js/TypeScript library for controlling Eviqo devices via cloud connection. Monitor your Eviqo charging stations and retrieve real-time data through WebSocket communication.
+A Node.js/TypeScript client library for Eviqo EV charging stations. Control and monitor your Eviqo devices via cloud WebSocket connection with full TypeScript support.
 
-**This is a Node.js port of the original Python [evipy](https://github.com/zacharyasmith/evipy) library.**
+**This is a Node.js/TypeScript port of the original Python [evipy](https://github.com/zacharyasmith/evipy) library.**
 
 ## Features
 
@@ -21,23 +21,23 @@ A Node.js/TypeScript library for controlling Eviqo devices via cloud connection.
 
 ## Installation
 
-Install evipy from npm:
+Install eviqo-client-api from npm:
 
 ```bash
-npm install evipy
+npm install eviqo-client-api
 ```
 
 Or with yarn:
 
 ```bash
-yarn add evipy
+yarn add eviqo-client-api
 ```
 
 ## Quick Start
 
 ### Prerequisites
 
-Before using evipy, you need to set up your Eviqo credentials as environment variables:
+Before using eviqo-client-api, you need to set up your Eviqo credentials as environment variables:
 
 ```bash
 export EVIQO_EMAIL="your-email@example.com"
@@ -54,7 +54,7 @@ EVIQO_PASSWORD=your-password
 ### Basic Usage
 
 ```typescript
-import { EviqoWebsocketConnection, WS_URL } from 'evipy';
+import { EviqoWebsocketConnection, WS_URL } from 'eviqo-client-api';
 import * as dotenv from 'dotenv';
 
 // Load environment variables
@@ -194,7 +194,7 @@ Calculate the password hash for Eviqo authentication.
 #### Logger
 
 ```typescript
-import { logger, LogLevel } from 'evipy';
+import { logger, LogLevel } from 'eviqo-client-api';
 
 // Set log level
 logger.setLevel(LogLevel.DEBUG); // DEBUG, INFO, WARN, ERROR
@@ -217,7 +217,7 @@ import {
   EviqoDevicePageModel,
   DeviceDocs,
   WidgetUpdate,
-} from 'evipy';
+} from 'eviqo-client-api';
 ```
 
 ## Development
@@ -226,8 +226,8 @@ import {
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/zacharyasmith/evipy.git
-cd evipy/nodejs
+git clone https://github.com/tsightler/eviqo-client-api.git
+cd eviqo-client-api
 ```
 
 2. Install dependencies:
@@ -310,13 +310,13 @@ We welcome contributions! Please follow these steps:
 
 If you encounter any issues or have questions:
 
-- **Bug Reports**: [GitHub Issues](https://github.com/zacharyasmith/evipy/issues)
-- **Feature Requests**: [GitHub Issues](https://github.com/zacharyasmith/evipy/issues)
-- **Questions**: [GitHub Discussions](https://github.com/zacharyasmith/evipy/discussions)
+- **Bug Reports**: [GitHub Issues](https://github.com/tsightler/eviqo-client-api/issues)
+- **Feature Requests**: [GitHub Issues](https://github.com/tsightler/eviqo-client-api/issues)
+- **Questions**: [GitHub Discussions](https://github.com/tsightler/eviqo-client-api/discussions)
 
 When reporting bugs, please include:
 - Node.js version (`node --version`)
-- evipy version (`npm list evipy`)
+- eviqo-client-api version (`npm list eviqo-client-api`)
 - Error messages and stack traces
 - Steps to reproduce the issue
 
