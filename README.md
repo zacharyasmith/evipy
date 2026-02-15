@@ -1,3 +1,9 @@
+# ⚠️ ARCHIVED -- READ-ONLY
+
+Please use instead the excellent mqtt connected repository that has resolved some of the reliability issues here.
+
+https://github.com/tsightler/eviqo
+
 # evipy
 
 [![PyPI version](https://badge.fury.io/py/evipy.svg)](https://badge.fury.io/py/evipy)
